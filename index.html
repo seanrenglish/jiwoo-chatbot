@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jiwoo Chatbot</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    #chatbox { border: 1px solid #ccc; background: #fff; padding: 10px; height: 400px; overflow-y: auto; }
+    .message { margin: 10px 0; }
+    .user { color: green; font-weight: bold; }
+    .bot { color: #333; }
+    #input { width: 100%; padding: 10px; margin-top: 10px; }
+    #send { padding: 10px 20px; background: green; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>Ask Jiwoo's AI Mentor</h2>
+<div id="chatbox"></div>
+<input id="input" type="text" placeholder="Type your message here...">
+<button id="send">Send</button>
+
+<script>
+const chatbox = document.getElementById('chatbox');
+const input = document.getElementById('input');
+const send = document.getElementById('send');
+
+let conversation = [{ role: 'system', content: 'You are a helpful 3rd grade math tutor named Jiwoo.' }];
+
+send.addEventListener('click', async () => {
+  const userMessage = input.value.trim();
+  if (!userMessage) return;
+
+  chatbox.innerHTML += `<div class="message user">You: ${userMessage}</div>`;
+  input.value = '';
+
+  conversation.push({ role: 'user', content: userMessage });
+
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: conversation })
+  });
+
+  const data = await response.json();
+  const reply = data.reply;
+
+  chatbox.innerHTML += `<div class="message bot">Jiwoo: ${reply}</div>`;
+  chatbox.scrollTop = chatbox.scrollHeight;
+
+  conversation.push({ role: 'assistant', content: reply });
+});
+</script>
+
+</body>
+</html>
