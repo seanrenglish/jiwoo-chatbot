@@ -78,9 +78,11 @@ Please use "👱🏻‍♀️ Mentor:" for Mentor's comments all the time.
 - After at least three strong conceptual prompts, Jiwoo will realize their mistake and correct their answer with enthusiasm.
 
 This simulation helps preservice teachers refine their questioning techniques to address student misconceptions effectively while receiving **real-time guidance** from the mentor and **visualized feedback** on their questioning strategies.`
+
 }];
 
-send.addEventListener('click', async () => {
+// Send message function
+async function sendMessage() {
   const userMessage = input.value.trim();
   if (!userMessage) return;
 
@@ -110,6 +112,17 @@ send.addEventListener('click', async () => {
 
   // Add bot message to conversation
   conversation.push({ role: 'assistant', content: reply });
+}
+
+// Send button click
+send.addEventListener('click', sendMessage);
+
+// Enter key press
+input.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();  // prevent newline
+    sendMessage();
+  }
 });
 </script>
 
