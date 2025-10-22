@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const { messages, convo_id } = req.body;
 
   try {
-    // Call OpenAI
+    // --- 1️⃣ Call OpenAI ---
     const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     const reply = data.choices?.[0]?.message?.content || "[No response]";
     const turn = messages.length;
 
-    // Supabase Logging
+    // --- 2️⃣ Setup Supabase details ---
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const headers = {
@@ -33,32 +33,28 @@ export default async function handler(req, res) {
       "Prefer": "return=minimal"
     };
 
-    const lastUserMsg = messages.at(-2)?.content || "unknown";
+    // --- 3️⃣ Helper function to log messages ---
+    async function logMessage(role, message, turnNum) {
+      await fetch(`${supabaseUrl}/rest/v1/logs`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          convo_id,
+          turn: turnNum,
+          role,
+          message
+        })
+      });
+    }
 
-    // Log user message
-    await fetch(`${supabaseUrl}/rest/v1/logs`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        convo_id,
-        turn: turn - 1,
-        role: "user",
-        message: lastUserMsg
-      })
-    });
+    // --- 4️⃣ Log the latest user message (the second-to-last in the array) ---
+    const userMessage = messages.at(-1)?.content || "unknown";
+    await logMessage("user", userMessage, turn);
 
-    // Log assistant reply
-    await fetch(`${supabaseUrl}/rest/v1/logs`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        convo_id,
-        turn,
-        role: "assistant",
-        message: reply
-      })
-    });
+    // --- 5️⃣ Log the assistant reply ---
+    await logMessage("assistant", reply, turn + 1);
 
+    // --- 6️⃣ Return response to frontend ---
     res.status(200).json({ reply });
 
   } catch (err) {
