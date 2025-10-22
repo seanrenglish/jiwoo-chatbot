@@ -25,6 +25,11 @@ const chatbox = document.getElementById('chatbox');
 const input = document.getElementById('input');
 const send = document.getElementById('send');
 
+// Generate or retrieve convo_id
+const convoId = sessionStorage.getItem('convo_id') || 'convo_' + Date.now();
+sessionStorage.setItem('convo_id', convoId);
+
+// Start the conversation with the system prompt
 let conversation = [{
   role: 'system',
   content: `You are a simulation tool designed for preservice teachers to practice questioning techniques with a virtual student named Jiwoo, who has a mathematical misconception about fractions. You also play the role of a mentor who provides feedback on questioning techniques when necessary.
@@ -43,7 +48,7 @@ Please use "👱🏻‍♀️ Mentor:" for Mentor's comments all the time.
   - **Moderate-level questions**: Jiwoo may show some hesitation but largely sticks to their original misunderstanding.
   - **High-level questions**: Jiwoo begins to express doubt and starts connecting ideas, eventually leading to an "aha moment."
 - Jiwoo's responses do not end in questions but instead conclude in a way that maintains a natural conversational flow.
-- If the conversation seems to be wrapping up, Jiwoo will say **"end"** to signal the end. 
+- If the conversation seems to be wrapping up, Jiwoo will say **"end"** to signal the end.
 
 **Mentor's Role:**
 - The mentor appears only when necessary to guide the conversation naturally. Least appearance in the conversation. Please let the user have conversation with Jiwoo rather than intervening by the mentor. For example, if the user asks "how did you get the answer?", please let Jiwoo respond.
@@ -57,21 +62,8 @@ Please use "👱🏻‍♀️ Mentor:" for Mentor's comments all the time.
 
 **Framework of Teaching Moves Analysis:**
 - The chatbot will analyze the preservice teacher’s questions and categorize them into the following types:
-  - **High-leverage teaching moves:**
-    - **Pressing:** Encouraging Jiwoo to explain their reasoning.
-    - **Linking:** Connecting Jiwoo’s work to the problem context.
-    - **Expanding:** Engaging Jiwoo in thinking about quantities.
-    - **Encouraging:** Asking Jiwoo to try alternative strategies.
-    - **Connecting:** Encouraging symbolic notation.
-    - **Posing:** Introducing related problems.
-    - **Adapting:** Adjusting the problem to Jiwoo’s level.
-    - **Bridging:** Helping Jiwoo connect previous knowledge.
-  - **Low-leverage teaching moves:**
-    - **Taking Over:** Directly telling Jiwoo what to do.
-    - **Funneling Down:** Narrowing Jiwoo’s thinking to get the correct answer.
-    - **Checking:** Asking about basic concepts.
-    - **Pointing Out:** Criticizing mistakes.
-    - **Directing:** Explicitly teaching the correct answer.
+  - **High-leverage teaching moves:** Pressing, Linking, Expanding, Encouraging, Connecting, Posing, Adapting, Bridging
+  - **Low-leverage teaching moves:** Taking Over, Funneling Down, Checking, Pointing Out, Directing
 
 - At the end of the session, the chatbot will generate a **graph displaying the frequency distribution** of these teaching moves.
 - The chatbot will provide **feedback** based on the analysis (high and low), highlighting strengths and suggesting areas for improvement very specifically with frequency data.
@@ -92,23 +84,31 @@ send.addEventListener('click', async () => {
   const userMessage = input.value.trim();
   if (!userMessage) return;
 
+  // Show user message
   chatbox.innerHTML += `<div class="message user">You: ${userMessage}</div>`;
   input.value = '';
 
+  // Add user message to conversation
   conversation.push({ role: 'user', content: userMessage });
 
+  // Call backend
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: conversation })
+    body: JSON.stringify({
+      messages: conversation,
+      convo_id: convoId
+    })
   });
 
   const data = await response.json();
   const reply = data.reply;
 
+  // Show bot reply
   chatbox.innerHTML += `<div class="message bot">Jiwoo: ${reply}</div>`;
   chatbox.scrollTop = chatbox.scrollHeight;
 
+  // Add bot message to conversation
   conversation.push({ role: 'assistant', content: reply });
 });
 </script>
