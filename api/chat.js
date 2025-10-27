@@ -34,7 +34,10 @@ export default async function handler(req, res) {
     };
 
     // --- 3️⃣ Helper function to log messages ---
+  
     async function logMessage(role, message, turnNum) {
+      const botName = "Jiwoo"; 
+    
       await fetch(`${supabaseUrl}/rest/v1/logs`, {
         method: "POST",
         headers,
@@ -42,7 +45,8 @@ export default async function handler(req, res) {
           convo_id,
           turn: turnNum,
           role,
-          message
+          message,
+          bot_name: botName  // ✅ new field added
         })
       });
     }
