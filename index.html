@@ -80,6 +80,18 @@ Please use "👱🏻‍♀️ Mentor:" for Mentor's comments all the time.
 This simulation helps preservice teachers refine their questioning techniques to address student misconceptions effectively while receiving **real-time guidance** from the mentor and **visualized feedback** on their questioning strategies.`
 
 }];
+// === Auto-Greeting Message on Load ===
+window.addEventListener('load', () => {
+  const botName = "Jiwoo"; 
+  const greeting = `👩🏻‍💼 Mentor: Hello! I am your mentor teacher. Please introduce yourself to ${botName}.`;
+
+  // show greeting immediately
+  chatbox.innerHTML += `<div class="message bot">${greeting}</div>`;
+  chatbox.scrollTop = chatbox.scrollHeight;
+
+  // store greeting in conversation history
+  conversation.push({ role: 'assistant', content: greeting });
+});
 
 // Send message function
 async function sendMessage() {
