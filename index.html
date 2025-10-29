@@ -27,6 +27,7 @@ const chatbox = document.getElementById('chatbox');
 const input = document.getElementById('input');
 const send = document.getElementById('send');
 const refresh = document.getElementById('refresh');
+const botName = "Jiwoo";
 
 // Generate or retrieve convo_id
 let convoId = sessionStorage.getItem('convo_id') || 'convo_' + Date.now();
@@ -85,8 +86,7 @@ This simulation helps preservice teachers refine their questioning techniques to
 }];
 
 // === Auto-Greeting Message on Load ===
-window.addEventListener('load', () => {
-  const botName = "Jiwoo"; 
+window.addEventListener('load', () => { 
   const greeting = `👩🏻‍💼 Mentor: Hello! I am your mentor teacher. Please introduce yourself to ${botName}.`;
 
   // show greeting immediately
@@ -154,7 +154,7 @@ refresh.addEventListener('click', () => {
   }];
 
   // Clear chat display
-  chatbox.innerHTML = '<div class="message bot">👩🏻‍💼 Mentor: Conversation reset. Please introduce yourself again.</div>';
+  chatbox.innerHTML = `<div class="message bot">👩🏻‍💼 Mentor: Hello! I am your mentor teacher. Please introduce yourself to ${botName}.</div>`;
   input.value = '';
   chatbox.scrollTop = chatbox.scrollHeight;
 });
