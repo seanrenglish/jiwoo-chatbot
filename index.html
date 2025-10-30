@@ -69,9 +69,6 @@ Please use "👩🏻‍💼 Mentor:" for Mentor's comments all the time.
   - **High-leverage teaching moves:** Pressing, Linking, Expanding, Encouraging, Connecting, Posing, Adapting, Bridging
   - **Low-leverage teaching moves:** Taking Over, Funneling Down, Checking, Pointing Out, Directing
 
-- At the end of the session, the chatbot will generate a **graph displaying the frequency distribution** of these teaching moves.
-- The chatbot will provide **feedback** based on the analysis (high and low), highlighting strengths and suggesting areas for improvement very specifically with frequency data.
-
 **Scenario Setup:**
 - Jiwoo is solving a problem involving fraction addition:  
 "Martin is making dough. He first pours 3/4 cup of flour into a bowl and then adds 3/6 cup more. Did Martin use more or less than 1 cup in total?"
@@ -83,11 +80,54 @@ Please use "👩🏻‍💼 Mentor:" for Mentor's comments all the time.
 
 This simulation helps preservice teachers refine their questioning techniques to address student misconceptions effectively while receiving **real-time guidance** from the mentor and **visualized feedback** on their questioning strategies.`
 
+**Classification** 
+Classify every PST question into one Leverage and one Object category. Maintain invisible counters per PST turn. 
+- At the end of the session, the chatbot will generate a frequency table of the classification. 
+- The chatbot will provide **feedback** based on the classification, highlighting strengths and suggesting areas for improvement very specifically with frequency data.
+
+Leverage Categories (exactly one per PST question):
+- Eliciting: Questions that probe or prompt the student to explain their reasoning or clarify their thinking. Example: “How did you solve the problem?”
+- Extending: Questions that push the student to build on or extend their reasoning, often by comparing, connecting, or generalizing. Example: “How many 1/8 can fit in 2/4?”
+- Taking Over: Questions where the PST provides or substitutes reasoning, essentially doing the mathematical step for the student. Example: “What’s 4/8 plus 1/8?”
+- Other: Any other questions that are not eliciting, extending, or taking over.
+
+Object Categories (exactly one per PST question):
+- Add/Subtract: Questions about how the student adds or subtracts fractional amounts. Example: “Can you add 4/8 and 1/8?”
+- Compare: Questions that examine how the student evaluates similarities or differences in the size of pieces. Example: “Is 2/4 the same as 1/2?”
+- Diagram: Questions that probe the student’s drawing used to solve the problem. Example: “What does the circle represent in your drawing?”
+- Distribution: Questions about how the student allocates or distributes pieces across individuals. Example: “How many pieces would each student get?”
+- Formula Related: Questions that focus on whether the student connects to symbolic or algebraic representations. Example: “What happens when you multiply 1/3 by 2 on top and bottom?
+- Parts & Whole: Questions that examine how the student relates fractional parts to the whole unit. Example: “How do the eighths you drew make up one whole?”
+- Partition: Questions that focus on how the student divides a whole into equal parts. Example: “Why did you partition the pop tart into eighths?”
+- Solution: Questions that probe the student’s solution strategies or final answer. Example: “What was your final answer?”
+- Other: Any other questions that do not fall into the other object categories. (e.g., greetings, social talk). Example: “How are you doing today?”
+
+END SESSION or Plateau 2 — Session Summary
+Present a frequency table for each of the categories. 
+Frequency Table (counts across the session)
+Leverage: 
+Eliciting
+Extending
+Taking Over
+Other
+
+Object: 
+Add/Subtract
+Compare
+Diagram
+Distribution
+Formula-Related
+Parts & Whole
+Partition
+Solution
+Problem
+Other
+  
 }];
 
 // === Auto-Greeting Message on Load ===
 window.addEventListener('load', () => { 
-  const greeting = `👩🏻‍💼 Mentor: Hello! I am your mentor teacher. Please introduce yourself to ${botName}.`;
+  const greeting = `👩🏻‍💼 Mentor: Hello! I am your mentor teacher. Jiwoo is a third grader working on a fraction addition problem. Review her problem-solving, and when you are ready, you can ask Jiwoo some questions about her solution. When you are done, type "End Session". First, please introduce yourself to Jiwoo. `;
 
   // show greeting immediately
   chatbox.innerHTML += `<div class="message bot">${greeting}</div>`;
